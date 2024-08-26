@@ -34,7 +34,7 @@ cd multicluster-cli
 Compile a CLI:
 
 ```bash
-go build -o multicluster-cli
+go build -o multicluster
 ```
 
 ## Uso
