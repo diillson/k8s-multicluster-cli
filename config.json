@@ -1,0 +1,16 @@
+{
+  "clusters": [
+    {
+      "name": "meu-eks-1",
+      "context": "arn:aws:eks:region:1234567890123:cluster/meu-k8s-1"
+    },
+    {
+      "name": "meu-eks-2",
+      "context": "arn:aws:eks:region:1234567890123:cluster/meu-k8s-2"
+    },
+    {
+      "name": "meu-eks-3",
+      "context": "arn:aws:eks:region:1234567890123:cluster/meu-k8s-3"
+    }
+  ]
+}
