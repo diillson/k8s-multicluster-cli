@@ -3,10 +3,10 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/diillson/k8s-multicluster-cli/models"
 	"io/ioutil"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"multicluster/models"
 	"path/filepath"
 )
 

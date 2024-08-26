@@ -2,9 +2,9 @@ package k8s
 
 import (
 	"context"
+	"github.com/diillson/k8s-multicluster-cli/utils"
 	"github.com/sirupsen/logrus"
 	networkingv1 "k8s.io/api/networking/v1"
-	"multicluster/utils"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

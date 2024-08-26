@@ -2,10 +2,10 @@ package k8s
 
 import (
 	"fmt"
+	"github.com/diillson/k8s-multicluster-cli/utils"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	"multicluster/utils"
 	"path/filepath"
 
 	"k8s.io/client-go/util/homedir"

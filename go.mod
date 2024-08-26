@@ -1,4 +1,4 @@
-module multicluster
+module github.com/diillson/k8s-multicluster-cli
 
 go 1.22.0
 

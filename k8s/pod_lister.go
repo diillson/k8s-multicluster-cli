@@ -2,11 +2,11 @@ package k8s
 
 import (
 	"context"
+	"github.com/diillson/k8s-multicluster-cli/utils"
 	"github.com/sirupsen/logrus"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"multicluster/utils"
 )
 
 func ListPods(clientset *kubernetes.Clientset, clusterName string, namespaces []string, statusFilter string) {

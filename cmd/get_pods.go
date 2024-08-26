@@ -1,12 +1,12 @@
 package cmd
 
 import (
+	"github.com/diillson/k8s-multicluster-cli/config"
+	"github.com/diillson/k8s-multicluster-cli/k8s"
+	"github.com/diillson/k8s-multicluster-cli/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"log"
-	"multicluster/config"
-	"multicluster/k8s"
-	"multicluster/utils"
 	"sync"
 )
 
