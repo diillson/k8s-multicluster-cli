@@ -120,6 +120,94 @@ A CLI faz cache de dados de configuração e contexto para melhorar a performanc
 
 A CLI utiliza `logrus` para logging estruturado e fornece mensagens detalhadas de erro. Se uma operação falhar em um cluster específico, a CLI continua processando os demais clusters.
 
+### Exemplo de ouputs:
+
+### Exemplos de Output para Comandos Comuns da Multicluster CLI
+
+#### Comando: `multicluster get nodes`
+```bash
+Cluster: dev-cluster
++---------------+----------+---------------+--------+------------+
+|     Name      |  Status  |     Roles     |  Age   |  Version   |
++---------------+----------+---------------+--------+------------+
+| node-01       | Ready    | master        | 15d    | v1.22.0    |
+| node-02       | Ready    | worker        | 15d    | v1.22.0    |
+| node-03       | NotReady | worker        | 14d    | v1.22.0    |
+| node-04       | Ready    | worker        | 13d    | v1.22.0    |
++---------------+----------+---------------+--------+------------+
+
+Cluster: prod-cluster
++---------------+----------+---------------+--------+------------+
+|     Name      |  Status  |     Roles     |  Age   |  Version   |
++---------------+----------+---------------+--------+------------+
+| node-01       | Ready    | master        | 15d    | v1.22.0    |
+| node-02       | Ready    | worker        | 15d    | v1.22.0    |
+| node-03       | NotReady | worker        | 14d    | v1.22.0    |
+| node-04       | Ready    | worker        | 13d    | v1.22.0    |
++---------------+----------+---------------+--------+------------+
+```
+
+#### Comando: `multicluster get pods --namespaces default,kube-system`
+```bash
+Cluster: staging-cluster
++------------+-------------------------+-----------------+---------+-------------+
+| Namespace  |        Pod Name          | Containers READY| Status  |   Node      |
++------------+-------------------------+-----------------+---------+-------------+
+| default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
+| default    | backend-deployment-5678  | 2/2             | Running | node-02     |
+| kube-system| coredns-78fcdcb99c-kmdjl | 1/1             | Running | node-03     |
++------------+-------------------------+-----------------+---------+-------------+
+
+Cluster: prod-cluster
++------------+-------------------------+-----------------+---------+-------------+
+| Namespace  |        Pod Name          | Containers READY| Status  |   Node      |
++------------+-------------------------+-----------------+---------+-------------+
+| default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
+| default    | backend-deployment-5678  | 2/2             | Running | node-02     |
+| kube-system| coredns-78fcdcb99c-kmdjl | 1/1             | Running | node-03     |
++------------+-------------------------+-----------------+---------+-------------+
+```
+
+#### Comando: `get configmaps --cluster prod-cluster`
+```bash
+Cluster: prod-cluster
++-------------+-------------------+-------------------------+
+| Namespace   |    ConfigMap Name |           Data          |
++-------------+-------------------+-------------------------+
+| default     | app-config         | key1: value1            |
+| kube-system | coredns            | Corefile: .:53...       |
++-------------+-------------------+-------------------------+
+```
+
+#### Comando: `multicluster get secrets --namespace default`
+```bash
+Cluster: dev-cluster
++-------------+-------------------+-----------+---------------------------------+
+| Namespace   |    Secret Name    |   Type    |            Data Keys            |
++-------------+-------------------+-----------+---------------------------------+
+| default     | db-password       | Opaque    | password: 16 bytes              |
+| default     | api-key           | Opaque    | key: 32 bytes                   |
++-------------+-------------------+-----------+---------------------------------+
+
+Cluster: prod-cluster
++-------------+-------------------+-----------+---------------------------------+
+| Namespace   |    Secret Name    |   Type    |            Data Keys            |
++-------------+-------------------+-----------+---------------------------------+
+| default     | db-password       | Opaque    | password: 16 bytes              |
+| default     | api-key           | Opaque    | key: 32 bytes                   |
++-------------+-------------------+-----------+---------------------------------+
+```
+
+#### Comando: `multicluster get logs --namespace default --pod frontend-deployment-1234`
+```bash
+Cluster: dev-cluster
+--- Logs for pod frontend-deployment-1234 in namespace default ---
+2024-08-26 10:30:01 Starting application...
+2024-08-26 10:30:02 Connecting to database...
+2024-08-26 10:30:03 Application started on port 8080.
+```
+
+Esses exemplos mostram como a Multicluster CLI fornece informações detalhadas e organizadas para facilitar o gerenciamento de recursos Kubernetes em múltiplos clusters.
 
 ### Contribuição
 
