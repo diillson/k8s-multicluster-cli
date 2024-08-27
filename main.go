@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/diillson/k8s-multicluster-cli/cmd"
 	"github.com/sirupsen/logrus"
-	"multicluster/cmd"
 )
 
 func main() {
