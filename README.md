@@ -151,7 +151,7 @@ Cluster: prod-cluster
 ```bash
 Cluster: staging-cluster
 +------------+-------------------------+-----------------+---------+-------------+
-| Namespace  |        Pod Name          | READY| Status  |   Node      |
+| Namespace  |        Pod Name          | READY | Status  |   Node      |
 +------------+-------------------------+-----------------+---------+-------------+
 | default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
 | default    | backend-deployment-5678  | 2/2             | Running | node-02     |
@@ -160,7 +160,7 @@ Cluster: staging-cluster
 
 Cluster: prod-cluster
 +------------+-------------------------+-----------------+---------+-------------+
-| Namespace  |        Pod Name          | READY| Status  |   Node      |
+| Namespace  |        Pod Name          | READY | Status  |   Node      |
 +------------+-------------------------+-----------------+---------+-------------+
 | default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
 | default    | backend-deployment-5678  | 2/2             | Running | node-02     |
