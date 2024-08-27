@@ -153,18 +153,18 @@ Cluster: staging-cluster
 +------------+-------------------------+-----------------+---------+-------------+
 | Namespace  |        Pod Name          | READY | Status  |   Node      |
 +------------+-------------------------+-----------------+---------+-------------+
-| default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
-| default    | backend-deployment-5678  | 2/2             | Running | node-02     |
-| kube-system| coredns-78fcdcb99c-kmdjl | 1/1             | Running | node-03     |
+| default    | frontend-deployment-1234 | 3/3   | Running | node-01     |
+| default    | backend-deployment-5678  | 2/2   | Running | node-02     |
+| kube-system| coredns-78fcdcb99c-kmdjl | 1/1   | Running | node-03     |
 +------------+-------------------------+-----------------+---------+-------------+
 
 Cluster: prod-cluster
 +------------+-------------------------+-----------------+---------+-------------+
 | Namespace  |        Pod Name          | READY | Status  |   Node      |
 +------------+-------------------------+-----------------+---------+-------------+
-| default    | frontend-deployment-1234 | 3/3             | Running | node-01     |
-| default    | backend-deployment-5678  | 2/2             | Running | node-02     |
-| kube-system| coredns-78fcdcb99c-kmdjl | 1/1             | Running | node-03     |
+| default    | frontend-deployment-1234 | 3/3   | Running | node-01     |
+| default    | backend-deployment-5678  | 2/2   | Running | node-02     |
+| kube-system| coredns-78fcdcb99c-kmdjl | 1/1   | Running | node-03     |
 +------------+-------------------------+-----------------+---------+-------------+
 ```
 
