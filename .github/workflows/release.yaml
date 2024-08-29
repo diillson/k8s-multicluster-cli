@@ -46,6 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     #    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
@@ -75,9 +80,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gh
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
       - name: Upload Artifact to Release
         run: |
