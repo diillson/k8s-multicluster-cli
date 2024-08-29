@@ -61,9 +61,9 @@ jobs:
 
       - name: Zip the build directories
         run: |
-          zip -r multicluster-cli-darwin.zip plr_calculator-darwin || true
-          zip -r multicluster-cli-linux.zip plr_calculator-linux || true
-          zip -r multicluster-cli-windows.zip plr_calculator-windows || true
+          zip -r multicluster-cli-darwin.zip multicluster-cli-darwin || true
+          zip -r multicluster-cli-linux.zip multicluster-cli-linux || true
+          zip -r multicluster-cli-windows.zip multicluster-cli-windows || true
 
       - name: List files in the current directory
         run: ls -lah
