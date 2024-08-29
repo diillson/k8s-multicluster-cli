@@ -78,7 +78,7 @@ jobs:
 
       - name: Upload Artifact to Release
         run: |
-#           Verifica se há algum tag existente
+          # Verifica se há algum tag existente
           if git describe --tags --abbrev=0 >/dev/null 2>&1; then
             LATEST_TAG=$(git describe --tags --abbrev=0)
           else
@@ -87,17 +87,17 @@ jobs:
             git tag "$LATEST_TAG"
             git push origin "$LATEST_TAG"
           fi
-      
+          
           # Verifica se há uma release associada ao tag
           if ! gh release view "$LATEST_TAG" --repo ${{ github.repository }} >/dev/null 2>&1; then
             echo "No release found for the tag $LATEST_TAG. Creating a new release."
             gh release create "$LATEST_TAG" --repo ${{ github.repository }} --title "$LATEST_TAG" --notes "Initial release."
           fi
-      
+          
           # Obtem os assets da release
           ASSETS=$(gh release view $LATEST_TAG --repo ${{ github.repository }} --json assets -q '.assets[].name')
-      
-          # Faz o upload dos arquivos .zip se ainda não estiverem na release
+          
+          # Faz o uload dos arquivos .zip se ainda nao estiverem na release.
           for file in *.zip; do
             if echo "$ASSETS" | grep -q "^${file}$"; then
               echo "Asset ${file} already exists in the release. Skipping upload."
