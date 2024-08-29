@@ -30,7 +30,13 @@ jobs:
         run: env GOOS=${{ matrix.os }} GOARCH=amd64 go mod tidy
 
       - name: Build
-        run: env GOOS=${{ matrix.os }} GOARCH=amd64 go build -v -o multicluster-cli-${{ matrix.os }}
+        run: env GOOS=${{ matrix.os }} GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -v -o multicluster-cli-${{ matrix.os }}
+
+      - name: Install UPX
+        run: sudo apt-get install upx
+
+      - name: Compress Binary with UPX
+        run: upx --best --lzma multicluster-cli-${{ matrix.os }}
 
       - name: pull-request
         uses: diillson/auto-pull-request@v1.0.1
