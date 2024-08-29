@@ -29,6 +29,9 @@ jobs:
       - name: List files in the current directory
         run: ls -lah
 
+      - name: Dependencies
+        run: env GOOS=${{ matrix.os }} GOARCH=amd64 go mod tidy
+
       - name: Build
         run: env GOOS=${{ matrix.os }} GOARCH=amd64 go build -v -o multicluster-cli-${{ matrix.os }}
 
