@@ -1,0 +1,36 @@
+name: Go Build and Release
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.22.0]
+        os: [linux, windows, darwin]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: List files in the current directory
+        run: ls -lah
+
+      - name: Build
+        run: env GOOS=${{ matrix.os }} GOARCH=amd64 go build -v -o multicluster-cli-${{ matrix.os }}
+
+      - name: pull-request
+        uses: diillson/auto-pull-request@v1.0.1
+        with:
+          destination_branch: "main"
+          github_token: ${{ secrets.REPO_TOKEN }}

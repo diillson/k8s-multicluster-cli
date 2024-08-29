@@ -1,0 +1,88 @@
+name: Go Build and Release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.22.0]
+        os: [linux, windows, darwin]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: List files in the current directory
+        run: ls -lah
+
+      - name: Build
+        run: env GOOS=${{ matrix.os }} GOARCH=amd64 go build -v -o multicluster-cli-${{ matrix.os }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: multicluster-cli-${{ matrix.os }}
+          path: multicluster-cli-${{ matrix.os }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    #    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: .
+
+      - name: List files in the current directory
+        run: ls -lah
+
+      - name: Zip the build directories
+        run: |
+          zip -r multicluster-cli-darwin.zip plr_calculator-darwin || true
+          zip -r multicluster-cli-linux.zip plr_calculator-linux || true
+          zip -r multicluster-cli-windows.zip plr_calculator-windows || true
+
+      - name: List files in the current directory
+        run: ls -lah
+
+      - name: Create Release
+        uses: google-github-actions/release-please-action@v3
+        id: create_release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: go
+          package-name: "multicluster-cli"
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Upload Artifact to Release
+        run: |
+          LATEST_TAG=$(gh release list -L 1 --repo ${{ github.repository }} | cut -f1)
+          ASSETS=$(gh release view $LATEST_TAG --repo ${{ github.repository }} --json assets -q '.assets[].name')
+          for file in *.zip; do
+            if echo "$ASSETS" | grep -q "^${file}$"; then
+              echo "Asset ${file} already exists in the release. Skipping upload."
+            else  
+              gh release upload $LATEST_TAG "$file" --repo ${{ github.repository }}
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
