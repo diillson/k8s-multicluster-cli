@@ -76,6 +76,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gh
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Upload Artifact to Release
         run: |
           # Verifica se há algum tag existente
