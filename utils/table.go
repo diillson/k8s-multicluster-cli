@@ -11,6 +11,7 @@ import (
 	networkingv1 "k8s.io/api/networking/v1"
 	"os"
 	"strings"
+	"time"
 )
 
 func PrintNodeTable(clusterName string, nodes []v1.Node) {
@@ -154,7 +155,7 @@ func PrintNamespaceTable(clusterName string, namespaces []v1.Namespace) {
 func PrintPodTable(clusterName string, pods []v1.Pod, statusFilter string) {
 	color.Cyan("Cluster: %s", clusterName)
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Namespace", "Pod Name", "Ready", "Status", "Restarts", "Node"})
+	table.SetHeader([]string{"Namespace", "Pod Name", "Ready", "Status", "Restarts", "Age", "Node"})
 
 	for _, pod := range pods {
 		if statusFilter != "" && strings.ToLower(string(pod.Status.Phase)) != strings.ToLower(statusFilter) {
@@ -171,8 +172,8 @@ func PrintPodTable(clusterName string, pods []v1.Pod, statusFilter string) {
 		}
 		containersReady := fmt.Sprintf("%d/%d", readyContainers, len(pod.Status.ContainerStatuses))
 		restarts := fmt.Sprintf("%d", totalRestarts)
-
-		table.Append([]string{pod.Namespace, pod.Name, containersReady, string(pod.Status.Phase), restarts, pod.Spec.NodeName})
+		age := time.Since(pod.CreationTimestamp.Time).Round(time.Second).String()
+		table.Append([]string{pod.Namespace, pod.Name, containersReady, string(pod.Status.Phase), restarts, age, pod.Spec.NodeName})
 	}
 
 	table.Render()

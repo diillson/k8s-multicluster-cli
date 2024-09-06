@@ -12,7 +12,7 @@ import (
 var (
 	describeCluster   string
 	describeNamespace string
-	describePodName   string
+	//describePodName   string
 )
 
 func init() {
@@ -21,16 +21,19 @@ func init() {
 	describePodCmd.PersistentFlags().StringVarP(&kubeconfigPath, "kubeconfig", "k", utils.DefaultKubeconfigPath(), "Path to the kubeconfig file")
 	describePodCmd.PersistentFlags().StringVarP(&describeCluster, "cluster", "l", "", "Name of the cluster")
 	describePodCmd.PersistentFlags().StringVarP(&describeNamespace, "namespace", "n", "", "Namespace of the pod")
-	describePodCmd.PersistentFlags().StringVarP(&describePodName, "pod", "p", "", "Name of the pod")
+	//describePodCmd.PersistentFlags().StringVarP(&describePodName, "pod", "p", "", "Name of the pod")
 }
 
 var describePodCmd = &cobra.Command{
-	Use:   "pod",
+	Use:   "pod [pod_name]",
 	Short: "Describe a specific pod in a specific cluster",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if !cmd.Flags().Changed("config") || os.Getenv("MC_CONFIG") != "" {
 			configFile = utils.ValidateConfig(cmd, "config", "MC_CONFIG")
 		}
+
+		describePodName := args[0]
 
 		if describeCluster == "" || describeNamespace == "" || describePodName == "" {
 			logrus.Fatalf("Cluster name, namespace, and pod name are required")
