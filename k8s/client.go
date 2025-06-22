@@ -2,79 +2,58 @@ package k8s
 
 import (
 	"fmt"
-	"github.com/diillson/k8s-multicluster-cli/utils"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"path/filepath"
-
 	"k8s.io/client-go/util/homedir"
+	"path/filepath"
 )
 
-func expandPath(path string) (string, error) {
-	if len(path) > 2 && path[:2] == "~/" {
-		homeDir := homedir.HomeDir()
-		return filepath.Join(homeDir, path[2:]), nil
-	}
-	return path, nil
-}
-
-func CreateK8sClientFromContext(contextName string, kubeconfigPath string) (*kubernetes.Clientset, dynamic.Interface, error) {
+// Recebe contextName e caminho kubeconfig, retorna clientset e dynamicClient igual kubectl.
+func CreateK8sClients(contextName, kubeconfigPath string) (*kubernetes.Clientset, dynamic.Interface, error) {
 	if kubeconfigPath == "" {
-		utils.DefaultKubeconfigPath()
+		kubeconfigPath = filepath.Join(homedir.HomeDir(), ".kube", "config")
 	}
-
-	kubeconfigPath, err := expandPath(kubeconfigPath)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to expand kubeconfig path: %v", err)
-	}
-
 	configOverrides := &clientcmd.ConfigOverrides{CurrentContext: contextName}
 	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfigPath},
 		configOverrides,
 	).ClientConfig()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to build k8s config: %w", err)
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to create k8s clientset: %w", err)
 	}
-
-	dynamicClient, err := dynamic.NewForConfig(config)
+	dynamicCli, err := dynamic.NewForConfig(config)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to create dynamic client: %w", err)
 	}
-
-	return clientset, dynamicClient, nil
+	return clientset, dynamicCli, nil
 }
 
-//func CreateK8sClient(cluster models.ClusterConfig, kubeconfigPath string) (*kubernetes.Clientset, dynamic.Interface, error) {
-//	if kubeconfigPath == "" {
-//		kubeconfigPath = "~/.kube/config"
-//	}
-//
-//	kubeconfigPath, err := expandPath(kubeconfigPath)
-//	if err != nil {
-//		return nil, nil, fmt.Errorf("failed to expand kubeconfig path: %v", err)
-//	}
-//
-//	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-//	if err != nil {
-//		return nil, nil, err
-//	}
-//
-//	clientset, err := kubernetes.NewForConfig(config)
-//	if err != nil {
-//		return nil, nil, err
-//	}
-//
-//	dynamicClient, err := dynamic.NewForConfig(config)
-//	if err != nil {
-//		return nil, nil, err
-//	}
-//
-//	return clientset, dynamicClient, nil
-//}
+func CreateK8sClientsWithRestConfig(contextName, kubeconfigPath string) (*kubernetes.Clientset, dynamic.Interface, *rest.Config, error) {
+	if kubeconfigPath == "" {
+		kubeconfigPath = filepath.Join(homedir.HomeDir(), ".kube", "config")
+	}
+	configOverrides := &clientcmd.ConfigOverrides{CurrentContext: contextName}
+	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfigPath},
+		configOverrides,
+	).ClientConfig()
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("failed to build k8s config: %w", err)
+	}
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("failed to create k8s clientset: %w", err)
+	}
+	dynamicCli, err := dynamic.NewForConfig(config)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("failed to create dynamic client: %w", err)
+	}
+	return clientset, dynamicCli, config, nil
+}

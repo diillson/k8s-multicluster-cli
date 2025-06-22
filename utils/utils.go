@@ -82,3 +82,26 @@ func getNodeRoles(node v1.Node) string {
 	}
 	return strings.Join(roles, ",")
 }
+
+// Lê o arquivo dado ou encerra
+func ReadFileOrExit(path string) (string, error) {
+	by, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return string(by), nil
+}
+
+var defaultContextFile = ".multicluster_default_context"
+
+func SetDefaultContext(context string) error {
+	return os.WriteFile(defaultContextFile, []byte(context), 0644)
+}
+
+func GetDefaultContext() (string, error) {
+	by, err := os.ReadFile(defaultContextFile)
+	if err != nil {
+		return "", err
+	}
+	return string(by), nil
+}
