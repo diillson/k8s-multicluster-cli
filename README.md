@@ -1,218 +1,187 @@
-# Multicluster CLI
+• Paridade CLI com kubectl
+• Multi-cluster, handlers universais, comandos core, plugins, completion, etc.
+• Pronto para onboarding de times, CI/CD, SRE, DevOps, onboarding, auditoria, automação.
+  
+--------
 
-## Visão Geral
+# 🚀 Multicluster CLI — O "kubectl" universal para múltiplos clusters Kubernetes
 
-O Multicluster CLI é uma ferramenta desenvolvida para gerenciar múltiplos clusters Kubernetes simultaneamente. Ela oferece uma gama de comandos para interagir com recursos Kubernetes em diferentes clusters, como listar pods, nodes, ConfigMaps, Secrets, Ingressos, e mais. A CLI foi construída com escalabilidade e performance em mente, utilizando concorrência, caching e design modular para lidar eficientemente com operações em grande escala.
+O **Multicluster CLI** é uma linha de comando moderna, inspirada no kubectl, feita para operar **simultaneamente em múltiplos clusters**. Permite gerenciar, auditar, automatizar e operar clusters em larga escala, com experiência idêntica ao kubectl, porém multicluster de verdade.
 
-## Funcionalidades
+---
 
-- **Gerenciamento de Múltiplos Clusters**: Execute comandos em múltiplos clusters Kubernetes de forma concorrente.
-- **Gerenciamento de Pods**: Liste pods em vários clusters com opções de filtro.
-- **Gerenciamento de Nodes**: Liste e exiba o status de nodes, incluindo papéis e condições.
-- **ConfigMaps e Secrets**: Liste e recupere ConfigMaps e Secrets, com a possibilidade de exibir o conteúdo.
-- **Gerenciamento de Ingressos**: Recupere e exiba recursos de Ingress em vários clusters.
-- **Logs**: Obtenha logs de pods, com opções para logs específicos de containers e streaming em tempo real (modo follow).
-- **Operações com Manifestos**: Aplique e delete manifestos Kubernetes em múltiplos clusters.
-- **Configurações Personalizáveis**: Suporte para arquivos de configuração personalizados e caminhos de kubeconfig.
+## ✨ Principais Funcionalidades
 
-## Instalação
+- **Comandos kubectl universais:**  
+- `get`, `describe`, `apply`, `delete`, `patch`, `logs`, `exec`, `scale`, `label`, `annotate`, `rollout` (status, history, undo, restart), `port-forward`, `events`, `config`, `version`, `can-i`, `drain`, `cordon`, `uncordon`, `diagnostics`...
+- **Suporte a todos recursos:**  
+- Recursos built-in, CRDs, subresources, plugins externos.
+- **Multi-cluster simultâneo:**  
+- Execute qualquer comando em TODOS ou grupo(s) de clusters, em paralelo, sem scripts.
+- **Output agrupado por cluster**, em formato table, YAML, JSON.
+- **Plugins estilo kubectl:**  
+- Plugins (`multicluster-foo`) são auto-descobertos e executáveis via `plugin` ou fallback.
+- **Completion automático:**  
+- Completa comandos, flags, clusters, resources (bash, zsh, fish, powershell).
+- **Diagnóstico/Self-Test:**  
+- Checagem rápida do health/config dos clusters.
+- **CLI modular, Go idiomático**, seguro e pronto para empresa de qualquer porte.
 
-### Pré-requisitos
+---
 
-- Go 1.22 ou superior
-- Clusters Kubernetes configurados e acessíveis via kubeconfig
+## 🛠️ Instalação
 
-### Compilação da CLI
+### Pré-requisitos:
+- Go 1.22+ (para build/local)
+- Kubernetes clusters acessíveis e credenciais kubeconfig/context corretamente configuradas
 
-Clone o repositório e navegue até o diretório do projeto:
+### Build local
 
-```bash
-git clone https://github.com/seu-repositorio/multicluster-cli.git
-cd multicluster-cli
-```
-
-Compile a CLI:
-
-```bash
+```sh
+git clone https://github.com/diillson/k8s-multicluster-cli.git
+cd k8s-multicluster-cli
 go build -o multicluster
-```
+```  
+--------
 
-## Uso
+## 🚦 Como usar
 
-### Sintaxe Geral
+### Configuração (config.json)
 
-```bash
-./multicluster-cli [comando] [flags]
-```
+Arquivo JSON apontando nome do cluster e o contexto do kubeconfig correspondente:
 
-### Comandos
-
-- **get pods**: Liste pods em múltiplos clusters.
-
-  ```bash
-  ./multicluster-cli get pods --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --namespaces default --status Running --cluster eks-cluster-1
-  ```
-
-- **get nodes**: Liste nodes em múltiplos clusters.
-
-  ```bash
-  ./multicluster-cli get nodes --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --cluster eks-cluster-1
-  ```
-
-- **get configmaps**: Liste ConfigMaps em múltiplos clusters.
-
-  ```bash
-  ./multicluster-cli get configmaps --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --namespaces default --name meu-configmap --cluster eks-cluster-1
-  ```
-
-- **get secrets**: Liste Secrets em múltiplos clusters.
-
-  ```bash
-  ./multicluster-cli get secrets --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --namespaces default --name meu-secret --cluster eks-cluster-1
-  ```
-
-- **get ingress**: Liste Ingresses em múltiplos clusters.
-
-  ```bash
-  ./multicluster-cli get ingress --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --namespaces default --cluster eks-cluster-1
-  ```
-
-- **get logs**: Obtenha logs de um pod específico.
-
-  ```bash
-  ./multicluster-cli get logs --config /caminho/para/config.json --kubeconfig /caminho/para/kubeconfig --namespace default --pod meu-pod --container meu-container --cluster eks-cluster-1 --follow
-  ```
-
-### Flags
-
-- **`--config, -c`**: Caminho para o arquivo de configuração dos clusters (padrão: `config.json` ou valor de `MC_CONFIG`).
-- **`--kubeconfig, -k`**: Caminho para o arquivo kubeconfig (padrão: `~/.kube/config`).
-- **`--namespaces, -n`**: Lista de namespaces separada por vírgulas para filtrar (padrão: todos os namespaces).
-- **`--status, -s`**: Status para filtrar pods (ex.: Running, Pending).
-- **`--cluster, -l`**: Nome do cluster (se vazio, o comando se aplica a todos os clusters).
-
-para mais comandos e flags tem o **--help** e o para atribuição curta **-h**
-
-### Configuração
-
-A CLI utiliza um arquivo de configuração JSON para definir clusters e contextos:
-
-```json
-{
-  "clusters": [
     {
-      "name": "eks-cluster-1",
-      "context": "arn:aws:eks:region:id-conta:cluster/eks-cluster-1"
-    },
-    {
-      "name": "eks-cluster-2",
-      "context": "arn:aws:eks:region:id-conta:cluster/eks-cluster-2"
+      "clusters": [
+        { "name": "dev", "context": "dev-context" },
+        { "name": "prod", "context": "prod-context" },
+        { "name": "eks-1", "context": "arn:aws:eks:us-east-1:xxxxxxx:cluster/eks-1" }
+      ]
     }
-  ]
-}
-```
 
-### Caching
+* O nome é usado por todas as flags  --cluster .
+* Contextos precisam existir no seu kubeconfig.
+  
+--------
 
-A CLI faz cache de dados de configuração e contexto para melhorar a performance. O cache expira após 5 minutos por padrão.
+# Exemplos de comandos
 
-### Tratamento de Erros
+## Get, Describe, Delete, etc
 
-A CLI utiliza `logrus` para logging estruturado e fornece mensagens detalhadas de erro. Se uma operação falhar em um cluster específico, a CLI continua processando os demais clusters.
+#### Get pods em todos clusters
+multicluster get pods -n default
 
-### Exemplo de ouputs:
+### Describe deployment em todos clusters
+multicluster describe deployment minha-app -n dev
 
-### Exemplos de Output para Comandos Comuns da Multicluster CLI
+### Delete service em todos clusters (flag --cluster limita)
+multicluster delete svc meu-svc -n prod --cluster dev
 
-#### Comando: `multicluster get nodes`
-```bash
-Cluster: dev-cluster
-+---------------+----------+---------------+--------+------------+
-|     Name      |  Status  |     Roles     |  Age   |  Version   |
-+---------------+----------+---------------+--------+------------+
-| node-01       | Ready    | master        | 15d    | v1.22.0    |
-| node-02       | Ready    | worker        | 15d    | v1.22.0    |
-| node-03       | NotReady | worker        | 14d    | v1.22.0    |
-| node-04       | Ready    | worker        | 13d    | v1.22.0    |
-+---------------+----------+---------------+--------+------------+
+# Apply, Patch, Rollout, Label, Annotate
 
-Cluster: prod-cluster
-+---------------+----------+---------------+--------+------------+
-|     Name      |  Status  |     Roles     |  Age   |  Version   |
-+---------------+----------+---------------+--------+------------+
-| node-01       | Ready    | master        | 15d    | v1.22.0    |
-| node-02       | Ready    | worker        | 15d    | v1.22.0    |
-| node-03       | NotReady | worker        | 14d    | v1.22.0    |
-| node-04       | Ready    | worker        | 13d    | v1.22.0    |
-+---------------+----------+---------------+--------+------------+
-```
+#### Apply yaml em todos clusters
+multicluster apply -f manifest.yaml
 
-#### Comando: `multicluster get pods --namespaces default,kube-system`
-```bash
-Cluster: staging-cluster
-+------------+-------------------------+-----------------+---------+-------------+
-| Namespace  |        Pod Name          | READY | Status  |   Node      |
-+------------+-------------------------+-----------------+---------+-------------+
-| default    | frontend-deployment-1234 | 3/3   | Running | node-01     |
-| default    | backend-deployment-5678  | 2/2   | Running | node-02     |
-| kube-system| coredns-78fcdcb99c-kmdjl | 1/1   | Running | node-03     |
-+------------+-------------------------+-----------------+---------+-------------+
+### Patch (edit) universal
+multicluster patch deployment minha-app -n prod --patch '{"spec":{"replicas":3}}' --type strategic
 
-Cluster: prod-cluster
-+------------+-------------------------+-----------------+---------+-------------+
-| Namespace  |        Pod Name          | READY | Status  |   Node      |
-+------------+-------------------------+-----------------+---------+-------------+
-| default    | frontend-deployment-1234 | 3/3   | Running | node-01     |
-| default    | backend-deployment-5678  | 2/2   | Running | node-02     |
-| kube-system| coredns-78fcdcb99c-kmdjl | 1/1   | Running | node-03     |
-+------------+-------------------------+-----------------+---------+-------------+
-```
+### Restart rollout universal
+multicluster patch deployment minha-app -n prod --patch '{"spec":{"template":{"metadata":{"annotations":{"kubectl.kubernetes.io/restartedAt":"2024-05-18T20:00:00Z"}}}}}' --type strategic
 
-#### Comando: `get configmaps --cluster prod-cluster`
-```bash
-Cluster: prod-cluster
-+-------------+-------------------+-------------------------+
-| Namespace   |    ConfigMap Name |           Data          |
-+-------------+-------------------+-------------------------+
-| default     | app-config         | key1: value1            |
-| kube-system | coredns            | Corefile: .:53...       |
-+-------------+-------------------+-------------------------+
-```
+### Escalar deployment/statefulset
+multicluster scale deployment minha-app --replicas=4 -n prod
 
-#### Comando: `multicluster get secrets --namespace default`
-```bash
-Cluster: dev-cluster
-+-------------+-------------------+-----------+---------------------------------+
-| Namespace   |    Secret Name    |   Type    |            Data Keys            |
-+-------------+-------------------+-----------+---------------------------------+
-| default     | db-password       | Opaque    | password: 16 bytes              |
-| default     | api-key           | Opaque    | key: 32 bytes                   |
-+-------------+-------------------+-----------+---------------------------------+
+### Label e annotate
+multicluster label deployment minha-app env=prod -n prod
+multicluster annotate pod meu-pod foo=bar -n prod
 
-Cluster: prod-cluster
-+-------------+-------------------+-----------+---------------------------------+
-| Namespace   |    Secret Name    |   Type    |            Data Keys            |
-+-------------+-------------------+-----------+---------------------------------+
-| default     | db-password       | Opaque    | password: 16 bytes              |
-| default     | api-key           | Opaque    | key: 32 bytes                   |
-+-------------+-------------------+-----------+---------------------------------+
-```
+# Logs, Exec, Port-forward, Events
 
-#### Comando: `multicluster get logs --namespace default --pod frontend-deployment-1234`
-```bash
-Cluster: dev-cluster
---- Logs for pod frontend-deployment-1234 in namespace default ---
-2024-08-26 10:30:01 Starting application...
-2024-08-26 10:30:02 Connecting to database...
-2024-08-26 10:30:03 Application started on port 8080.
-```
+### Logs de todos pods de um Job
+multicluster logs job meu-job -n batch-jobs
 
-Esses exemplos mostram como a Multicluster CLI fornece informações detalhadas e organizadas para facilitar o gerenciamento de recursos Kubernetes em múltiplos clusters.
+### Exec (apenas em um cluster se for interativo)
+multicluster exec meu-pod -- bash -l -n prod --cluster dev
 
-### Contribuição
+### Port-forward (apenas um cluster por vez)
+multicluster port-forward --pod meu-pod --ports 8000:80 -n prod
 
-Contribuições são bem-vindas! Por favor, faça um fork do repositório, crie um branch de feature e envie um pull request.
+#### Config, Plugins, Completion, Diagnóstico
 
-## Licença
+### Config
+multicluster config view
+multicluster config get-contexts
 
-Este projeto é licenciado sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+### Detecção/execução de plugins
+multicluster plugin
+multicluster plugin foo arg1
+
+### Completion
+multicluster completion bash   # (siga instruções para habilitar)
+
+### Diagnóstico self-test multicluster
+multicluster diagnostics
+
+### RBAC quick-check
+multicluster can-i create pod -n prod
+
+--------
+
+## 🧰 Flags principais
+
+*  --config-file, --cf  : Caminho do config.json multicluster (padrão: config.json)
+*  --kubeconfig         : Caminho kubeconfig base do kubectl (default: ~/.kube/config)
+*  --cluster            : Executa só no cluster nomeado
+*  --namespace, -n      : Namespace alvo (para recursos namespaced)
+*  --output, -o         : Formato de saída (table|json|yaml)
+* Para mais, cheque  --help
+  
+--------
+
+## 🧩 Plugins (estilo kubectl)
+
+* Basta instalar um binário executável com o prefixo  multicluster-foo  no seu PATH.
+* Ele será descoberto e usado via  multicluster plugin foo , ou  multicluster foo ...  (via fallback).
+  
+--------
+
+## 🛡️ Segurança e Enterprise
+
+* Fully Go idiomático, thread-safe, sem ciclos de import, pronto para paralelismo e automação massiva.
+* Output sempre agrupado e separados por cluster para rastreio de CI/CD, SRE e troubleshooting.
+  
+--------
+
+## 📌 Diagnóstico/self-test
+
+    multicluster diagnostics
+
+Diagnostica credenciais, versionamento, RBAC, disponibilidade dos clusters.
+  
+--------
+
+## 📖 Exemplos completos
+
+Exemplos extras e scripts de onboarding: Veja o diretório  /examples  ou o wiki/documentação do repositório.
+  
+--------
+
+## ❓ Dúvidas/complementos
+
+* O config.json é simples — pode ser gerado manualmente ou via script.
+* Tudo segue “kubectl UX” por padrão para fácil automação e adoção por times com experiência em Kubernetes.
+  
+--------
+
+## 📜 Licença
+
+MIT
+  
+--------
+
+## 🤝 Contribuição
+
+Contribuições são muito bem-vindas!, crie issues, PRs ou discussões.
+  
+--------
+
+Multicluster CLI — Porque cloud de verdade é multi-cluster, multi-time, e agnóstico.
