@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/diillson/k8s-multicluster-cli/compare/v2.0.0...v2.0.1) (2025-06-22)
+
+
+### Bug Fixes
+
+* Melhorando código, kubectl-like ([2277582](https://github.com/diillson/k8s-multicluster-cli/commit/22775827efe98e6f331ba6f963ff93fa24e95ebf))
+
 ## [2.0.0](https://github.com/diillson/k8s-multicluster-cli/compare/v1.1.0...v2.0.0) (2025-06-22)
 
 
