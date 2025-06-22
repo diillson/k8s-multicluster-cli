@@ -37,7 +37,7 @@ func OutputGeneric(results []models.GenericResourceListResult, format string, re
 func PrintUnstructuredTable(cluster, resourceType string, items []unstructured.Unstructured) {
 	fmt.Printf("\nCluster: %s — Resource: %s\n", cluster, resourceType)
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"NAMESPACE", "NAME", "AGE"})
+	//table.SetHeader([]string{"NAMESPACE", "NAME", "AGE"})
 	for _, item := range items {
 		meta := item.Object
 		ns := extractString(meta, "metadata.namespace")

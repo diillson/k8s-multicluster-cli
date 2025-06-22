@@ -41,9 +41,9 @@ func Execute() error {
 
 func init() {
 	// FLAGS GLOBAIS
-	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "cf", "config.json", "Path do config.json dos clusters")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "", "config.json", "Path do config.json dos clusters")
 	rootCmd.PersistentFlags().StringVarP(&kubeconfigPath, "kubeconfig", "k", "", "Path do kubeconfig")
-	rootCmd.PersistentFlags().StringVarP(&clusterName, "cluster", "ct", "", "Cluster alvo (opcional)")
+	rootCmd.PersistentFlags().StringVarP(&clusterName, "cluster", "", "", "Cluster alvo (opcional)")
 
 	// SUBCOMANDOS UNIVERSAIS
 	rootCmd.AddCommand(getCmd)
