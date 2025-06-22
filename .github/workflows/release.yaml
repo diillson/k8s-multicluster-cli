@@ -42,7 +42,7 @@ jobs:
         run: upx --best --lzma multicluster-cli-${{ matrix.os }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: multicluster-cli-${{ matrix.os }}
           path: multicluster-cli-${{ matrix.os }}
